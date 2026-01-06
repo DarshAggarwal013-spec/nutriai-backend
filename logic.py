@@ -20,12 +20,14 @@ def get_diet_plan(bmi):
             "risk": "जीवनशैली रोगों का खतरा"
         }
 
-    <p style="font-size:12px;color:gray;">
-        NutriAI provides general wellness guidance and is not a medical diagnosis tool.
-    </p>
-    """
+    html = """
+<p style="font-size:12px;color:gray;">
+This is text
+</p>
+"""
 
  
+
 
 
 
