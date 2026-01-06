@@ -30,5 +30,7 @@ def chat():
     app.run(host="0.0.0.0", port=10000)
 
 <p style="font-size:12px;color:gray;">
-⚠ NutriAI provides general wellness guidance and is not a medical diagnosis tool.
+"NutriAI provides general wellness guidance and is not a medical diagnosis tool."
+
 </p>
+
