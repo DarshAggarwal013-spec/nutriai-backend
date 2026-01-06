@@ -26,10 +26,23 @@ def chat():
         reply = "Please consult a healthcare professional for medical advice."
 
     return jsonify({"reply": reply})
+from flask import Flask
+
+app = Flask(__name__)
+
+@app.route("/")
+def home():
+    return """
+    <h1>NutriAI Backend is Live</h1>
+    <p style="font-size:12px;color:gray;">
+        NutriAI provides general wellness guidance and is not a medical diagnosis tool.
+    </p>
+    """
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=10000)
- style="font-size:12px;color:gray;">
-" NutriAI provides general wellness guidance and is not a medical diagnosis tool."
+
+
 
 
 
