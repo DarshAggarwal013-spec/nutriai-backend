@@ -21,5 +21,6 @@ def get_diet_plan(bmi):
         }
 
 <p style="font-size:12px;color:gray;">
-⚠ NutriAI provides general wellness guidance and is not a medical diagnosis tool.
+" NutriAI provides general wellness guidance and is not a medical diagnosis tool."
 </p>
+
