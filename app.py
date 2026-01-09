@@ -1,79 +1,58 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-import os
 
 app = Flask(__name__)
 CORS(app)
 
-
-# ----------------------------
-# Home route (for testing)
-# ----------------------------
-@app.route("/")
-def home():
-    return "NutriAI backend is live."
-
-# ----------------------------
-# Diet API
-# ----------------------------
 @app.route("/diet", methods=["POST"])
-def diet():
-    data = request.get_json()
-    bmi = float(data.get("bmi", 0))
-gender = data.get("gender", "unknown")
-age = int(data.get("age", 0))
+def get_diet():
+    data = request.json
 
+    age = int(data["age"])
+    height_cm = float(data["height"])
+    weight = float(data["weight"])
+    activity = data["activity"]
+    gender = data.get("gender", "male")  # default safe
 
-   if age < 18:
-    if bmi < 18.5:
-        status = "Underweight (Child)"
-        risk = "Growth and nutrition risk"
-    elif bmi < 25:
-        status = "Healthy (Child)"
-        risk = "Normal growth"
-    else:
-        status = "Overweight (Child)"
-        risk = "Risk of childhood obesity"
-else:
+    height_m = height_cm / 100
+    bmi = round(weight / (height_m ** 2), 1)
+
+    # ---- CHILD LOGIC ----
+    if age < 18:
+        return jsonify({
+            "bmi": bmi,
+            "status": "Child BMI varies by age & gender",
+            "note": "BMI-for-age percentile required",
+            "risk": "Consult pediatric guidelines"
+        })
+
+    # ---- ADULT LOGIC ----
     if bmi < 18.5:
         status = "Underweight"
+        diet = "High-protein foods like dal, milk, peanuts"
         risk = "Risk of malnutrition"
+
     elif bmi < 25:
-        status = "Healthy"
-        risk = "Low health risk"
+        status = "Normal"
+        diet = "Balanced Indian diet"
+        risk = "Low risk"
+
     else:
         status = "Overweight"
+        diet = "Low sugar, more vegetables"
         risk = "Risk of lifestyle diseases"
 
-diet = "Balanced diet with fruits, vegetables, protein, and water"
+    # Gender-based note
+    if gender == "female":
+        diet += ", iron-rich foods recommended"
+
+    return jsonify({
+        "bmi": bmi,
+        "status": status,
+        "diet": diet,
+        "risk": risk
+    })
 
 
-    return jsonify(result)
-
-# ----------------------------
-# Chatbot API
-# ----------------------------
-@app.route("/chat", methods=["POST"])
-def chat():
-    data = request.get_json()
-    message = data.get("message", "").lower()
-
-    if "diet" in message or "food" in message or "खाना" in message:
-        reply = "A balanced diet includes roti, dal, vegetables, fruits, and water."
-    elif "anemia" in message or "खून" in message:
-        reply = "Iron-rich foods include spinach, jaggery, dates, and lentils."
-    elif "diabetes" in message or "sugar" in message:
-        reply = "Reduce sugar intake and prefer whole grains and vegetables."
-    else:
-        reply = "This is general wellness advice. Please consult a doctor for medical concerns."
-
-    return jsonify({"reply": reply})
-
-# ----------------------------
-# Render-required runner
-# ----------------------------
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 10000))
-    app.run(host="0.0.0.0", port=port)
-
-
+    app.run(host="0.0.0.0", port=10000)
