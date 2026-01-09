@@ -25,8 +25,22 @@ def diet():
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+@app.route("/food-diet", methods=["POST"])
+def food_diet():
+    data = request.json
+    calories = data.get("calories", 0)
+
+    if calories and calories > 300:
+        advice = "High calorie food. Eat occasionally."
+    else:
+        advice = "Healthy food. Good choice!"
+
+    return jsonify({
+        "advice": advice
+    })
 
 if __name__ == "__main__":
     import os
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
+
