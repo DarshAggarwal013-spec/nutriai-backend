@@ -20,25 +20,33 @@ def home():
 def diet():
     data = request.get_json()
     bmi = float(data.get("bmi", 0))
+gender = data.get("gender", "unknown")
+age = int(data.get("age", 0))
 
+
+   if age < 18:
     if bmi < 18.5:
-        result = {
-            "status": "Underweight / कम वजन",
-            "diet": "High-protein foods like dal, milk, peanuts",
-            "risk": "Risk of malnutrition"
-        }
+        status = "Underweight (Child)"
+        risk = "Growth and nutrition risk"
     elif bmi < 25:
-        result = {
-            "status": "Healthy / स्वस्थ",
-            "diet": "Balanced Indian diet with roti, sabzi, fruits",
-            "risk": "Low health risk"
-        }
+        status = "Healthy (Child)"
+        risk = "Normal growth"
     else:
-        result = {
-            "status": "Overweight / अधिक वजन",
-            "diet": "Low sugar, high fiber foods like vegetables and oats",
-            "risk": "Risk of lifestyle diseases"
-        }
+        status = "Overweight (Child)"
+        risk = "Risk of childhood obesity"
+else:
+    if bmi < 18.5:
+        status = "Underweight"
+        risk = "Risk of malnutrition"
+    elif bmi < 25:
+        status = "Healthy"
+        risk = "Low health risk"
+    else:
+        status = "Overweight"
+        risk = "Risk of lifestyle diseases"
+
+diet = "Balanced diet with fruits, vegetables, protein, and water"
+
 
     return jsonify(result)
 
@@ -67,4 +75,5 @@ def chat():
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
+
 
