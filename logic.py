@@ -1,33 +1,28 @@
-def get_diet_plan(bmi):
-    bmi = float(bmi)
+def get_diet_plan(age, height, weight, activity, gender):
+    height_m = height / 100
+    bmi = round(weight / (height_m ** 2), 1)
 
     if bmi < 18.5:
-        return {
-            "status": "Underweight / कम वजन",
-            "diet": "दाल, दूध, मूंगफली जैसे उच्च प्रोटीन भोजन",
-            "risk": "कुपोषण का खतरा"
-        }
+        status = "Underweight"
+        diet = "High-protein foods like dal, milk, peanuts"
+        risk = "Risk of malnutrition"
     elif bmi < 25:
-        return {
-            "status": "Healthy / स्वस्थ",
-            "diet": "रोटी, सब्ज़ी, फल वाला संतुलित आहार",
-            "risk": "कम स्वास्थ्य जोखिम"
-        }
+        status = "Normal"
+        diet = "Balanced Indian diet"
+        risk = "Low risk"
     else:
-        return {
-            "status": "Overweight / अधिक वजन",
-            "diet": "कम चीनी, अधिक फाइबर भोजन",
-            "risk": "जीवनशैली रोगों का खतरा"
-        }
+        status = "Overweight"
+        diet = "Low-fat, high-fiber foods"
+        risk = "Risk of lifestyle diseases"
 
-    html = """
-<p style="font-size:12px;color:gray;">
-This is text
-</p>
-"""
+    if gender == "female":
+        diet += ", iron-rich foods (spinach, jaggery)"
+    else:
+        diet += ", strength-supporting foods"
 
- 
-
-
-
-
+    return {
+        "bmi": bmi,
+        "status": status,
+        "diet": diet,
+        "risk": risk
+    }
