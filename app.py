@@ -1,58 +1,32 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+from logic import get_diet_plan
 
 app = Flask(__name__)
 CORS(app)
 
+@app.route("/")
+def home():
+    return "NutriAI backend is running"
+
 @app.route("/diet", methods=["POST"])
-def get_diet():
-    data = request.json
+def diet():
+    try:
+        data = request.get_json()
 
-    age = int(data["age"])
-    height_cm = float(data["height"])
-    weight = float(data["weight"])
-    activity = data["activity"]
-    gender = data.get("gender", "male")  # default safe
+        age = int(data["age"])
+        height = float(data["height"])
+        weight = float(data["weight"])
+        activity = data["activity"]
+        gender = data["gender"]
 
-    height_m = height_cm / 100
-    bmi = round(weight / (height_m ** 2), 1)
+        result = get_diet_plan(age, height, weight, activity, gender)
+        return jsonify(result)
 
-    # ---- CHILD LOGIC ----
-    if age < 18:
-        return jsonify({
-            "bmi": bmi,
-            "status": "Child BMI varies by age & gender",
-            "note": "BMI-for-age percentile required",
-            "risk": "Consult pediatric guidelines"
-        })
-
-    # ---- ADULT LOGIC ----
-    if bmi < 18.5:
-        status = "Underweight"
-        diet = "High-protein foods like dal, milk, peanuts"
-        risk = "Risk of malnutrition"
-
-    elif bmi < 25:
-        status = "Normal"
-        diet = "Balanced Indian diet"
-        risk = "Low risk"
-
-    else:
-        status = "Overweight"
-        diet = "Low sugar, more vegetables"
-        risk = "Risk of lifestyle diseases"
-
-    # Gender-based note
-    if gender == "female":
-        diet += ", iron-rich foods recommended"
-
-    return jsonify({
-        "bmi": bmi,
-        "status": status,
-        "diet": diet,
-        "risk": risk
-    })
-
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=10000)
+    import os
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
